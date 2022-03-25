@@ -1,5 +1,6 @@
 stages:
   - testing       # Запуск тестов
+  - copy_history  # Копирование результата тестов из предыдущего запуска тестов
   - reports       # Генерация отчета
   - deploy        # Публикация отчета на gitlab pages
 
@@ -11,14 +12,29 @@ docker_job: # Название job
   before_script:
     - pip install -r requirements.txt       # Устанавка пакетов в поднятом контейнере перед запуском самих тестов
   script:
-    - pytest -n=4 --alluredir=./allure-results # Запуск тестов параллельно
+    - pytest -n 4 --dist loadgroup --alluredir=./allure-results # Запуск тестов параллельно
   allow_failure: true # Продолжить выполнение пайплайна в случае, если тесты упали.
   artifacts: # Сущность, с помощью которой, сохранится результат тестирования.
     when: always # Сохранять всегда
     paths:
       - ./allure-results # Здесь будет сохранен отчет
 
-
+history_job: # job сохранения прошлых результатов
+  stage: copy_history
+  tags:
+    - docker
+  image: storytel/alpine-bash-curl # Образ, для того чтобы скачать результаты теста из предыдущего пайплайна
+  script:
+    - 'curl --location --output artifacts.zip "https://gitlab.com/api/v4/projects/34795958/jobs/artifacts/master/download?job=pages&job_token=$CI_JOB_TOKEN"'  # С помощью api гитлаба скачиваем файлы из pages
+    - apk add unzip # Добавление в контейнер утилиты unzip (т.к. ее нет в образе)
+    - unzip artifacts.zip # Распаковывка файлов
+    - chmod -R 777 public # Полный доступ к содержиму
+    - cp -r ./public/history ./reports # Копируем историю в папку с результатами теста
+  artifacts:
+    paths:
+      - ./reports # Сохраняем данные
+  rules:
+    - when: always # Сохранять всегда
 
 allure_job: # job генерации отчета
   stage: reports
