@@ -1,0 +1,46 @@
+stages:
+  - testing       # Запуск тестов
+  - reports       # Генерация отчета
+  - deploy        # Публикация отчета на gitlab pages
+
+docker_job: # Название job
+  stage: testing # Первый stage, который нужно выполнить
+  tags:
+    - docker
+  image: python:3.8-alpine                  # Образ для запуска тестов
+  before_script:
+    - pip install -r requirements.txt       # Устанавка пакетов в поднятом контейнере перед запуском самих тестов
+  script:
+    - pytest -n=4 --alluredir=./allure-results # Запуск тестов параллельно
+  allow_failure: true # Продолжить выполнение пайплайна в случае, если тесты упали.
+  artifacts: # Сущность, с помощью которой, сохранится результат тестирования.
+    when: always # Сохранять всегда
+    paths:
+      - ./allure-results # Здесь будет сохранен отчет
+
+
+
+allure_job: # job генерации отчета
+  stage: reports
+  tags:
+    - docker
+  image: frankescobar/allure-docker-service # Образ с allure для генерации отчета.
+  script:
+     - allure generate -c ./allure-results -o ./allure-report # Генерация отчета из ./allure-results внутрь папки ./allure-report
+  artifacts:
+    paths:
+      - ./allure-results # Монтирование двух директорий для получения результатов тестирования и генерации отчетов соответственно
+      - ./allure-report
+  rules:
+    - when: always
+
+pages: # job публикации отчета в github pages
+  stage: deploy
+  script:
+    - mkdir public # Создаем папку public. По умолчанию гитлаб хостит в gitlab pages только из папки public
+    - mv ./allure-report/* public # Перемещение в папку public сгенерированного отчета.
+  artifacts:
+    paths:
+      - public
+  rules:
+    - when: always
