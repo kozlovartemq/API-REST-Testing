@@ -1,0 +1,27 @@
+[
+	{
+		"name": "Passed tests",
+		"matchedStatuses": ["passed"]
+	},
+	{
+		"name": "Ignored (Skipped or XFailed) tests ",
+		"matchedStatuses": ["skipped"]
+	},
+	{
+		"name": "UNKNOWN",
+		"matchedStatuses": ["unknown"]
+	},
+	{
+		"name": "Outdated tests",
+		"matchedStatuses": ["broken"],
+		"traceRegex": ".*FileNotFoundException.*"
+	},
+	{
+		"name": "Product defects",
+		"matchedStatuses": ["failed"]
+	},
+	{
+		"name": "Test defects",
+		"matchedStatuses": ["broken"]
+	}
+]
