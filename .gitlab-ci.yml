@@ -29,10 +29,10 @@ history_job: # job сохранения прошлых результатов
     - apk add unzip # Добавление в контейнер утилиты unzip (т.к. ее нет в образе)
     - unzip artifacts.zip # Распаковывка файлов
     - chmod -R 777 public # Полный доступ к содержиму
-    - cp -r ./public/history ./reports # Копируем историю в папку с результатами теста
+    - cp -r ./public/history ./allure-results # Копируем историю в папку с результатами теста
   artifacts:
     paths:
-      - ./reports # Сохраняем данные
+      - ./allure-results # Сохраняем данные
   rules:
     - when: always # Сохранять всегда
 
