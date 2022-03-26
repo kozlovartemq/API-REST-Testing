@@ -4,7 +4,7 @@ stages:
   - reports       # Генерация отчета
   - deploy        # Публикация отчета на gitlab pages
 
-docker_job: # Название job
+docker_job: # job прогона тестов
   stage: testing # Первый stage, который нужно выполнить
   tags:
     - docker
@@ -12,7 +12,7 @@ docker_job: # Название job
   before_script:
     - pip install -r requirements.txt       # Устанавка пакетов в поднятом контейнере перед запуском самих тестов
   script:
-    - pytest -n 4 --dist loadgroup --alluredir=./allure-results # Запуск тестов параллельно
+    - pytest -n 4 --dist loadfile --alluredir=./allure-results # Запуск тестов параллельно
   allow_failure: true # Продолжить выполнение пайплайна в случае, если тесты упали.
   artifacts: # Сущность, с помощью которой, сохранится результат тестирования.
     when: always # Сохранять всегда
