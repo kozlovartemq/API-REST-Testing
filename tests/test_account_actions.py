@@ -12,6 +12,7 @@ class TestVerifyLogin:
     @pytest.mark.positive
     @allure.story('Тест: верификация аккаунта')
     def test_post_to_verify_login(self, api):
+        """POST To Verify Login with valid details"""
         response_json = api.post(self.PATH, data={'email': UserAccounts.user1['email'],
                                                   'password': UserAccounts.user1['password']}).json()
 
@@ -21,6 +22,7 @@ class TestVerifyLogin:
     @pytest.mark.negative
     @allure.story('Тест: верификация аккаунта без ввода email')
     def test_post_to_verify_login_without_email(self, api):
+        """POST To Verify Login without email parameter"""
         response_json = api.post(self.PATH, data={'password': UserAccounts.user1['password']}).json()
 
         assert_code(response_json, 400)
@@ -29,6 +31,7 @@ class TestVerifyLogin:
     @pytest.mark.negative
     @allure.story('Тест: верификация аккаунта с недействительнми данными')
     def test_post_to_verify_login_with_invalid_details(self, api):
+        """POST To Verify Login with invalid details"""
         response_json = api.post(self.PATH, data={'email': UserAccounts.user1['email'],
                                                   'password': 'asd'}).json()
 
@@ -38,6 +41,7 @@ class TestVerifyLogin:
     @pytest.mark.negative
     @allure.story('Тест: отправка метода DELETE при верификации аккаунта')
     def test_delete_to_verify_login(self, api):
+        """DELETE To Verify Login"""
         response_json = api.delete(self.PATH, data={'email': UserAccounts.user1['email'],
                                                     'password': UserAccounts.user1['password']}).json()
 
@@ -52,6 +56,7 @@ class TestAccountCRUD:
     @pytest.mark.positive
     @allure.story('Тест: создание аккаунта')
     def test_post_to_create_account(self, api):
+        """POST To Create/Register User Account"""
         response_json = api.post('createAccount', data=UserAccounts.user1).json()
 
         assert_code(response_json, 201)
@@ -61,6 +66,7 @@ class TestAccountCRUD:
     @pytest.mark.positive
     @allure.story('Тест: получение подробностей аккаунта по email')
     def test_get_account_detail_by_email(self, api):
+        """GET user account detail by email"""
         response_json = api.get('getUserDetailByEmail', params={'email': UserAccounts.user1['email']}).json()
         print_json(response_json)
 
@@ -70,6 +76,7 @@ class TestAccountCRUD:
     @pytest.mark.negative
     @allure.story('Тест: получение подробностей аккаунта по несуществующему email')
     def test_get_account_detail_by_invalid_email(self, api):
+        """GET user account detail by invalid email"""
         response_json = api.get('getUserDetailByEmail', params={'email': 'asdasd@hamil.com'}).json()
         print_json(response_json)
 
@@ -80,6 +87,7 @@ class TestAccountCRUD:
     @pytest.mark.positive
     @allure.story('Тест: изменение данных аккаунта')
     def test_put_to_update_account(self, api):
+        """PUT METHOD To Update User Account"""
         response_json = api.put('updateAccount', data=UserAccounts.user2).json()
 
         assert_code(response_json, 200)
@@ -89,6 +97,7 @@ class TestAccountCRUD:
     @pytest.mark.positive
     @allure.story('Тест: удаление аккаунта')
     def test_delete_account(self, api):
+        """DELETE METHOD To Delete User Account"""
         response_json = api.delete('deleteAccount', data={'email': UserAccounts.user1['email'],
                                                           'password': UserAccounts.user1['password']}).json()
 

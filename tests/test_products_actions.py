@@ -12,6 +12,7 @@ class TestProductsList:
     @pytest.mark.positive
     @allure.story('Тест: получение полного списка продуктов')
     def test_get_all_products_list(self, api):
+        """Get All Products List"""
         response_json = api.get(self.PATH).json()
         print_json(response_json)
 
@@ -20,6 +21,7 @@ class TestProductsList:
     @pytest.mark.negative
     @allure.story('Тест: отправка метода POST к списку продуктов')
     def test_post_to_all_products_list(self, api):
+        """POST To All Products List"""
         response_json = api.post(self.PATH, data=Items.item1).json()
 
         assert_code(response_json, 405)
@@ -33,6 +35,7 @@ class TestBrandsList:
     @pytest.mark.positive
     @allure.story('Тест: получение полного списка брендов')
     def test_get_all_brands_list(self, api):
+        """Get All Brands List"""
         response_json = api.get(self.PATH).json()
         print_json(response_json)
 
@@ -41,6 +44,7 @@ class TestBrandsList:
     @pytest.mark.negative
     @allure.story('Тест: изменение полного списка брендов')
     def test_put_to_all_brands_list(self, api):
+        """PUT To All Brands List"""
         response_json = api.put(self.PATH).json()
 
         assert_code(response_json, 405)
@@ -56,6 +60,7 @@ class TestSearchProducts:
                                          pytest.param('adasd', marks=(pytest.mark.xfail(reason='Searching for nonexistent item'), pytest.mark.negative))],
                              ids=['valid_data', 'invalid_data'])
     def test_post_to_search_product(self, api, product):
+        """POST To Search Product"""
         response_json = api.post(self.PATH, data={'search_product': product}).json()
         print_json(response_json)
 
@@ -65,6 +70,7 @@ class TestSearchProducts:
     @pytest.mark.negative
     @allure.story('Тест: поиск продуктов без параметра search_product')
     def test_post_to_search_product_without_data(self, api):
+        """POST To Search Product without search_product parameter"""
         response_json = api.post(self.PATH).json()
 
         assert_code(response_json, 400)
