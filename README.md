@@ -6,7 +6,7 @@ Testing website: https://automationexercise.com/
 # Files
 
 **/utils**
-- assertions.py — contains assertions functions
+- assertions.py — contains assertion functions
 - print_helper.py — contains custom print function 
 - request_helper.py — contains class that wrap requests methods
 
